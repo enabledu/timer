@@ -1,11 +1,15 @@
 module default {
     type Project {
         required property name -> str;
-        required link owner -> User;
-        multi link time_entries -> Time_Entry;
+        multi link time_entries -> Time_Entry {
+            on target delete allow;
+            on source delete delete target;
+        }
     }
 
     type Time_Entry {
+        required link owner -> User;
+
         required property start_datetime -> datetime;
         property day_s := (datetime_get(.start_datetime, 'day'));
         property dow_s := (datetime_get(.start_datetime, 'dow'));
