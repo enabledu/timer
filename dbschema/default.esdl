@@ -18,7 +18,7 @@ module default {
         property month_e := (datetime_get(.end_datetime, 'month'));
         property year_e := (datetime_get(.end_datetime, 'year'));
 
-        property duration := (.start_datetime - .end_datetime);
+        property duration := (.end_datetime - .start_datetime);
         property hours_d := (duration_get(.duration, 'hour'));
         property minutes_d := (duration_get(.duration, 'minutes'));
         property seconds_d := (duration_get(.duration, 'seconds'));
