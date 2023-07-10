@@ -10,6 +10,8 @@ module default {
     type Time_Entry {
         required link owner -> User;
 
+        required property name -> str;
+
         required property start_datetime -> datetime;
         property day_s := (datetime_get(.start_datetime, 'day'));
         property dow_s := (datetime_get(.start_datetime, 'dow'));

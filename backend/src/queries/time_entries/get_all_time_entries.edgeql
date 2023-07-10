@@ -1,11 +1,11 @@
 select Time_Entry {
   id,
+  name,
 
-  owner: {
-    id,
-    username,
-    email
-  },
+  project := (select .<time_entries[is Project].name limit 1),
+
+  user := (.owner.username),
+  email := (.owner.email),
 
   start_datetime,
   day_s,
@@ -23,4 +23,4 @@ select Time_Entry {
   hours_d,
   minutes_d,
   seconds_d
-}
+} filter exists .end_datetime
