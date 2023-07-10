@@ -4,6 +4,7 @@ select Project {
 
   time_entries: {
     id,
+    name,
 
     owner: {
       id,

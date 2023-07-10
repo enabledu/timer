@@ -12,13 +12,15 @@ module default {
 
         required property name -> str;
 
+        link project := (select .<time_entries[is Project] limit 1);
+
         required property start_datetime -> datetime;
         property day_s := (datetime_get(.start_datetime, 'day'));
         property dow_s := (datetime_get(.start_datetime, 'dow'));
         property month_s := (datetime_get(.start_datetime, 'month'));
         property year_s := (datetime_get(.start_datetime, 'year'));
 
-        property end_datetime -> datetime;
+        required property end_datetime -> datetime;
         property day_e := (datetime_get(.end_datetime, 'day'));
         property dow_e := (datetime_get(.end_datetime, 'dow'));
         property month_e := (datetime_get(.end_datetime, 'month'));

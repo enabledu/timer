@@ -1,8 +1,7 @@
 select Time_Entry {
   id,
   name,
-
-  project := (select .<time_entries[is Project].name limit 1),
+  project,
 
   user := (.owner.username),
   email := (.owner.email),

@@ -3,25 +3,6 @@ import edgedb
 import uuid
 
 
-async def add_end_datetime_to_time_entry(
-    executor: edgedb.AsyncIOExecutor,
-    *,
-    time_entry_id: uuid.UUID,
-    end_datetime: datetime.datetime,
-):
-    return await executor.query_single(
-        """\
-        update Time_Entry
-        filter .id = <uuid>$time_entry_id
-        set {
-          end_datetime := <datetime>$end_datetime
-        }\
-        """,
-        time_entry_id=time_entry_id,
-        end_datetime=end_datetime,
-    )
-
-
 async def add_time_entry(
     executor: edgedb.AsyncIOExecutor,
     *,
@@ -38,18 +19,20 @@ async def add_time_entry(
           ),
           time_entry := (
             insert Time_Entry {
+              name := <str>$name,
               start_datetime := <datetime>$start_datetime,
+              end_datetime := <datetime>$end_datetime,
               owner := owner
             }
           ),
           project := (
             update Project
-            filter .id = <uuid>$project_id
+            filter .id = <optional uuid>$project_id
             set {
               time_entries += time_entry
             }
           )
-        select time_entry\
+        select time_entry
         """,
         owner_id=owner_id,
         start_datetime=start_datetime,
@@ -114,34 +97,35 @@ async def get_all_projects(
         select Project {
           id,
           name,
-
+        
           time_entries: {
             id,
-
+            name,
+            
             owner: {
               id,
               username,
               email
             },
-
+        
             start_datetime,
             day_s,
             dow_s,
             month_s,
             year_s,
-
+        
             end_datetime,
             day_e,
             dow_e,
             month_e,
             year_e,
-
+        
             duration,
             hours_d,
             minutes_d,
             seconds_d
           }
-        }\
+        }
         """,
     )
 
@@ -157,7 +141,8 @@ async def get_all_project_time_entries(
         )
         select project.time_entries {
           id,
-        
+          name,
+          
           owner: {
             id,
             username,
@@ -193,8 +178,7 @@ async def get_all_time_entries(
         select Time_Entry {
           id,
           name,
-        
-          project := (select .<time_entries[is Project].name limit 1),
+          project,
         
           user := (.owner.username),
           email := (.owner.email),
@@ -230,34 +214,35 @@ async def get_project(
         select Project {
           id,
           name,
-
+        
           time_entries: {
             id,
-
+            name,
+            
             owner: {
               id,
               username,
               email
             },
-
+        
             start_datetime,
             day_s,
             dow_s,
             month_s,
             year_s,
-
+        
             end_datetime,
             day_e,
             dow_e,
             month_e,
             year_e,
-
+        
             duration,
             hours_d,
             minutes_d,
             seconds_d
           }
-        } filter .id = <uuid>$project_id\
+        } filter .id = <uuid>$project_id
         """,
         project_id=project_id,
     )
@@ -272,30 +257,32 @@ async def get_time_entry(
         """\
         select Time_Entry {
           id,
-
+          name,
+          project,
+        
           owner: {
             id,
             username,
             email
           },
-
+        
           start_datetime,
           day_s,
           dow_s,
           month_s,
           year_s,
-
+        
           end_datetime,
           day_e,
           dow_e,
           month_e,
           year_e,
-
+        
           duration,
           hours_d,
           minutes_d,
           seconds_d
-        } filter .id = <uuid>$time_entry\
+        } filter .id = <uuid>$time_entry
         """,
         time_entry=time_entry,
     )

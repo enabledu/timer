@@ -4,6 +4,7 @@ with project := (
 )
 select project.time_entries {
   id,
+  name,
 
   owner: {
     id,

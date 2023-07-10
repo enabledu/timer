@@ -1,5 +1,7 @@
 select Time_Entry {
   id,
+  name,
+  project,
 
   owner: {
     id,
