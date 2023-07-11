@@ -8,7 +8,9 @@ async def add_time_entry(
     *,
     owner_id: uuid.UUID,
     start_datetime: datetime.datetime,
+    end_datetime: datetime.datetime,
     project_id: uuid.UUID,
+    name: str
 ):
     return await executor.query_single(
         """\
@@ -36,27 +38,23 @@ async def add_time_entry(
         """,
         owner_id=owner_id,
         start_datetime=start_datetime,
+        end_datetime=end_datetime,
         project_id=project_id,
+        name=name
     )
 
 
 async def create_project(
     executor: edgedb.AsyncIOExecutor,
     *,
-    owner_id: uuid.UUID,
     project_name: str,
 ):
     return await executor.query_single(
         """\
-        with owner := (
-          select User
-          filter .id = <uuid>$owner_id
-        )
         insert Project {
           name := <str>$project_name,
-        }\
+        }
         """,
-        owner_id=owner_id,
         project_name=project_name,
     )
 
@@ -251,7 +249,7 @@ async def get_project(
 async def get_time_entry(
     executor: edgedb.AsyncIOExecutor,
     *,
-    time_entry: uuid.UUID,
+    time_entry_id: uuid.UUID,
 ):
     return await executor.query_single(
         """\
@@ -282,9 +280,9 @@ async def get_time_entry(
           hours_d,
           minutes_d,
           seconds_d
-        } filter .id = <uuid>$time_entry
+        } filter .id = <uuid>$time_entry_id
         """,
-        time_entry=time_entry,
+        time_entry_id=time_entry_id,
     )
 
 

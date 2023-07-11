@@ -25,4 +25,4 @@ select Time_Entry {
   hours_d,
   minutes_d,
   seconds_d
-} filter .id = <uuid>$time_entry
+} filter .id = <uuid>$time_entry_id
