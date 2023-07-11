@@ -303,3 +303,28 @@ async def update_project(
         project_id=project_id,
         name=name,
     )
+
+
+async def update_time_entry(
+    executor: edgedb.AsyncIOExecutor,
+    *,
+    time_entry_id: uuid.UUID,
+    start_datetime: datetime.datetime,
+    end_datetime: datetime.datetime,
+    name: str,
+):
+    return await executor.query_single(
+        """\
+        update Time_Entry
+        filter .id = <uuid>$time_entry_id
+        set {
+          name := <str>$name,
+          start_datetime := <datetime>$start_datetime,
+          end_datetime := <datetime>$end_datetime,
+        }
+        """,
+        time_entry_id=time_entry_id,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        name=name,
+    )

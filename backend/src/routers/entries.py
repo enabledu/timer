@@ -51,7 +51,19 @@ async def create_time_entry(name: str = Body(),
                                         project_id=project_id)
 
 
-# TODO: implement the update_time_entry endpoint
+@entries_router.post("/{time_entry_id}/edit/",
+                     dependencies=[Depends(get_time_entry)],
+                     responses={404: {"model": ErrorModel}})
+async def edit_time_entry(time_entry_id: UUID,
+                          name: str = Body(),
+                          start_datetime: datetime = Body(),
+                          end_datetime: datetime = Body(),
+                          client: AsyncIOClient = Depends(get_client)):
+    return await queries.update_time_entry(client,
+                                           time_entry_id=time_entry_id,
+                                           start_datetime=start_datetime,
+                                           end_datetime=end_datetime,
+                                           name=name)
 
 
 @entries_router.delete("/{time_entry_id}/",
